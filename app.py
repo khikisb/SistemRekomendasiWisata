@@ -34,8 +34,7 @@ def filter_places():
 
 # Tab kedua: Rekomendasi berdasarkan deskripsi
 def recommend_by_description():
-    st.title('Rekomendasi Tempat Wisata berdasarkan Deskripsi')
-    user_input = st.text_area("Ceritakan kamu mau pergi kemana?")
+    user_input = st.text_area("Ceritakan kamu mau pergi kemana? dengan siapa?dan ingin melakukan apa?")
 
     if user_input:
         # Pra-pemrosesan teks pada input pengguna

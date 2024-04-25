@@ -35,7 +35,7 @@ def filter_places():
 # Tab kedua: Rekomendasi berdasarkan deskripsi
 def recommend_by_description():
     user_input = st.text_area("Ceritakan kamu mau pergi kemana? dengan siapa?dan ingin melakukan apa?")
-
+    st.write('Contoh : saya ingin pergi dengan keluarga dan ingin melihat lukisan lukisan yang indah')
     if user_input:
         # Pra-pemrosesan teks pada input pengguna
         stop_factory = StopWordRemoverFactory()

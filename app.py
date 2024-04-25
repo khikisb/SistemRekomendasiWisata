@@ -10,26 +10,31 @@ info_tourism = pd.read_csv("https://raw.githubusercontent.com/khikisb/SistemReko
 min_price = 0
 max_price = 900000
 
-# Sidebar untuk input pengguna
-st.sidebar.title('Filter Tempat Wisata')
-categories = st.sidebar.selectbox('Category wisata?', info_tourism['Category'].unique())
-cities = st.sidebar.selectbox('Lokasi?', info_tourism['City'].unique())
-selected_price_range = st.sidebar.slider('Range Harga?', min_value=min_price, max_value=max_price, value=(min_price, max_price))
+# Tab pertama: Filter Tempat Wisata
+def filter_places():
+    st.sidebar.title('Filter Tempat Wisata')
+    categories = st.sidebar.selectbox('Category wisata?', info_tourism['Category'].unique())
+    cities = st.sidebar.selectbox('Lokasi?', info_tourism['City'].unique())
+    selected_price_range = st.sidebar.slider('Range Harga?', min_value=min_price, max_value=max_price, value=(min_price, max_price))
 
-min_price, max_price = selected_price_range
+    min_price, max_price = selected_price_range
 
-# Filter data berdasarkan input pengguna
-filtered_data = info_tourism[(info_tourism['Category'] == categories) &
-                             (info_tourism['City'] == cities) &
-                             (info_tourism['Price'] >= min_price) &
-                             (info_tourism['Price'] <= max_price)]
+    # Filter data berdasarkan input pengguna
+    filtered_data = info_tourism[(info_tourism['Category'] == categories) &
+                                 (info_tourism['City'] == cities) &
+                                 (info_tourism['Price'] >= min_price) &
+                                 (info_tourism['Price'] <= max_price)]
 
-# Tab untuk rekomendasi berdasarkan deskripsi
-st.title('Rekomendasi Tempat Wisata')
+    # Tampilkan hasil filter
+    st.header('Tempat Wisata yang Sesuai dengan Preferensi Anda')
+    if len(filtered_data) == 0:
+        st.write('Maaf, tidak ada tempat wisata yang sesuai dengan preferensi Anda.')
+    else:
+        st.write(filtered_data[['Place_Name', 'Description', 'Category', 'City', 'Price', 'Rating']])
 
-# Membuat tab kedua
-if st.sidebar.button('Rekomendasi berdasarkan deskripsi'):
-    st.markdown('## Rekomendasi Tempat Wisata berdasarkan Deskripsi')
+# Tab kedua: Rekomendasi berdasarkan deskripsi
+def recommend_by_description():
+    st.title('Rekomendasi Tempat Wisata berdasarkan Deskripsi')
     user_input = st.text_area("Ceritakan kamu mau pergi kemana?")
 
     if user_input:
@@ -54,3 +59,16 @@ if st.sidebar.button('Rekomendasi berdasarkan deskripsi'):
         st.write(recommended_places)
     else:
         st.write("Silakan ceritakan tentang tempat yang ingin Anda kunjungi untuk menerima rekomendasi yang lebih baik.")
+
+# Main App
+st.title("Sistem Rekomendasi Tempat Wisata")
+
+# Pilihan tab
+tabs = ["Filter Tempat Wisata", "Rekomendasi berdasarkan Deskripsi"]
+choice = st.sidebar.radio("Navigasi", tabs)
+
+# Tampilkan tab yang dipilih
+if choice == "Filter Tempat Wisata":
+    filter_places()
+elif choice == "Rekomendasi berdasarkan Deskripsi":
+    recommend_by_description()

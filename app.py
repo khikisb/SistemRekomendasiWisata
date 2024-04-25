@@ -1,5 +1,5 @@
 import streamlit as st
-import pandas as pd
+import pKamus as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from Sastrawi.StopWordRemover.StopWordRemoverFactory import StopWordRemoverFactory
@@ -26,9 +26,9 @@ def filter_places():
                                  (info_tourism['Price'] <= max_price)]
 
     # Tampilkan hasil filter
-    st.header('Tempat Wisata yang Sesuai dengan Preferensi Anda')
+    st.header('Tempat Wisata yang Sesuai dengan Preferensi Kamu')
     if len(filtered_data) == 0:
-        st.write('Maaf, tidak ada tempat wisata yang sesuai dengan preferensi Anda.')
+        st.write('Maaf, tidak ada tempat wisata yang sesuai dengan preferensi Kamu.')
     else:
         st.write(filtered_data[['Place_Name', 'Description', 'Category', 'City', 'Price', 'Rating']])
 
@@ -56,10 +56,10 @@ def recommend_by_description():
 
         # Tampilkan tempat wisata yang direkomendasikan
         recommended_places = info_tourism.iloc[recommended_indices][['Place_Name', 'Description', 'Category', 'City', 'Price', 'Rating']]
-        st.write("Tempat wisata yang direkomendasikan berdasarkan deskripsi Anda:")
+        st.write("Tempat wisata yang direkomendasikan berdasarkan deskripsi Kamu:")
         st.write(recommended_places)
     else:
-        st.write("Silakan ceritakan tentang tempat yang ingin Anda kunjungi untuk menerima rekomendasi yang lebih baik.")
+        st.write("Hindari menggunakan nama kota, Karena kami akan merekomendasikan tempat yang paling cocok dengan Kamu di Seluruh Indonesia")
 
 # Main App
 st.title("Sistem Rekomendasi Tempat Wisata")

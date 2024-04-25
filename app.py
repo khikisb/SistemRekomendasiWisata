@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 
 # Load data
-info_tourism = pd.read_csv("/content/drive/MyDrive/Informatika Pariwisata/tourism_with_id.csv")
+info_tourism = pd.read_csv("https://raw.githubusercontent.com/khikisb/SistemRekomendasiWisata/main/tourism_with_id.csv")
 
 # Sidebar untuk input pengguna
 st.sidebar.header('Pilih Preferensi Anda')

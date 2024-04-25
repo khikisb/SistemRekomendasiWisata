@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+from Sastrawi.StopWordRemover.StopWordRemoverFactory import StopWordRemoverFactory
+import string
 
 # Load data
 info_tourism = pd.read_csv("https://raw.githubusercontent.com/khikisb/SistemRekomendasiWisata/main/tourism_with_id.csv")
@@ -37,22 +39,20 @@ def recommend_by_description():
 
     if user_input:
         # Pra-pemrosesan teks pada input pengguna
-        tfidf = TfidfVectorizer(stop_words='english')
+        tfidf = TfidfVectorizer(stop_words=stop_words)
         info_tourism['Description'] = info_tourism['Description'].fillna('')
         tfidf_matrix = tfidf.fit_transform(info_tourism['Description'])
 
-        # Pra-pemrosesan teks pada input pengguna
-        user_input_tfidf = tfidf.transform([user_input])
+        user_tfidf = tfidf.transform([user_input])
 
         # Hitung cosine similarity antara input pengguna dan deskripsi tempat wisata
-        similarity_scores = cosine_similarity(user_input_tfidf, tfidf_matrix)
+        similarity_scores = cosine_similarity(user_tfidf, tfidf_matrix)
 
         # Dapatkan indeks tempat wisata yang direkomendasikan berdasarkan similarity scores
         recommended_indices = similarity_scores.argsort()[0][::-1][:5]
 
         # Tampilkan tempat wisata yang direkomendasikan
-        recommended_places = info_tourism.iloc[recommended_indices]['Place_Name'].tolist()
-
+        recommended_places = info_tourism.iloc[recommended_indices][['Place_Name', 'Description', 'Category', 'City', 'Price', 'Rating']]
         st.write("Tempat wisata yang direkomendasikan berdasarkan deskripsi Anda:")
         st.write(recommended_places)
     else:

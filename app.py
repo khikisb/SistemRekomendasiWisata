@@ -36,6 +36,7 @@ def filter_places():
 def recommend_by_description():
     user_input = st.text_area("Ceritakan kamu mau pergi kemana? dengan siapa?dan ingin melakukan apa?")
     st.write('Contoh : saya ingin pergi dengan keluarga dan ingin melihat lukisan lukisan yang indah')
+    st.write('Contoh : saya ingin pergi ke pantai yang masih jarang orang tahu')
     if user_input:
         # Pra-pemrosesan teks pada input pengguna
         stop_factory = StopWordRemoverFactory()

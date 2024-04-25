@@ -6,13 +6,11 @@ from sklearn.metrics.pairwise import cosine_similarity
 # Load data
 info_tourism = pd.read_csv("https://raw.githubusercontent.com/khikisb/SistemRekomendasiWisata/main/tourism_with_id.csv")
 
-# Harga minimum dan maksimum yang diperbarui
-min_price = 0
-max_price = 900000
-
 # Tab pertama: Filter Tempat Wisata
 def filter_places():
     st.sidebar.title('Filter Tempat Wisata')
+    min_price = info_tourism['Price'].min()
+    max_price = info_tourism['Price'].max()
     categories = st.sidebar.selectbox('Category wisata?', info_tourism['Category'].unique())
     cities = st.sidebar.selectbox('Lokasi?', info_tourism['City'].unique())
     selected_price_range = st.sidebar.slider('Range Harga?', min_value=min_price, max_value=max_price, value=(min_price, max_price))

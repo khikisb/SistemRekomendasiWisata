@@ -39,6 +39,10 @@ def recommend_by_description():
 
     if user_input:
         # Pra-pemrosesan teks pada input pengguna
+        stop_factory = StopWordRemoverFactory()
+        stop_words = stop_factory.get_stop_words()
+        stop_words.extend(string.punctuation)
+
         tfidf = TfidfVectorizer(stop_words=stop_words)
         info_tourism['Description'] = info_tourism['Description'].fillna('')
         tfidf_matrix = tfidf.fit_transform(info_tourism['Description'])

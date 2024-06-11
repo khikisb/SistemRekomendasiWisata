@@ -53,10 +53,13 @@ def recommend_by_description():
         similarity_scores = cosine_similarity(user_tfidf, tfidf_matrix)
 
         # Dapatkan indeks tempat wisata yang direkomendasikan berdasarkan similarity scores
-        recommended_indices = similarity_scores.argsort()[0][::-1][:5]
+        similarity_scores = similarity_scores.flatten()
+        recommended_indices = similarity_scores.argsort()[::-1]
 
-        # Tampilkan tempat wisata yang direkomendasikan
+        # Buat DataFrame untuk menampilkan tempat wisata yang direkomendasikan dengan skor cosine similarity
         recommended_places = info_tourism.iloc[recommended_indices][['Place_Name', 'Description', 'Category', 'City', 'Price', 'Rating']]
+        recommended_places['Similarity_Score'] = similarity_scores[recommended_indices]
+
         st.write("Tempat wisata yang direkomendasikan berdasarkan deskripsi Kamu:")
         st.write(recommended_places)
     else:

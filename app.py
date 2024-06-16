@@ -38,9 +38,6 @@ def recommend_by_description():
     st.write('Contoh : saya ingin pergi dengan keluarga dan ingin melihat lukisan lukisan yang indah')
     st.write('Contoh : saya ingin pergi ke pantai yang masih jarang orang tahu')
     if user_input:
-        # Pilihan untuk menampilkan rekomendasi teratas
-        ntop = st.selectbox('Berapa rekomendasi yang ingin ditampilkan?', options=[3, 5, 7], index=0)
-
         # Pra-pemrosesan teks pada input pengguna
         stop_factory = StopWordRemoverFactory()
         stop_words = stop_factory.get_stop_words()
@@ -59,28 +56,31 @@ def recommend_by_description():
         similarity_scores = similarity_scores.flatten()
         recommended_indices = similarity_scores.argsort()[::-1]
 
-        # Batasi hasil rekomendasi ke jumlah yang dipilih oleh pengguna (ntop)
-        top_indices = recommended_indices[:ntop]
+        # Filter recommendations with similarity score >= 0.2
+        filtered_indices = [i for i in recommended_indices if similarity_scores[i] >= 0.2]
 
-        # Buat DataFrame untuk menampilkan tempat wisata yang direkomendasikan dengan skor cosine similarity
-        recommended_places = info_tourism.iloc[recommended_indices][['Place_Name', 'Description', 'Category', 'City', 'Price', 'Rating']]
-        recommended_places['Similarity_Score'] = similarity_scores[recommended_indices]
+        if filtered_indices:
+            # Buat DataFrame untuk menampilkan tempat wisata yang direkomendasikan dengan skor cosine similarity
+            recommended_places = info_tourism.iloc[filtered_indices][['Place_Name', 'Description', 'Category', 'City', 'Price', 'Rating']]
+            recommended_places['Similarity_Score'] = similarity_scores[filtered_indices]
 
-        st.write("Tempat wisata yang direkomendasikan berdasarkan deskripsi Kamu:")
-        for index, row in recommended_places.iterrows():
-            if row['Similarity_Score'] < 0.2:
-                st.markdown(f"**{row['Place_Name']}**\n{row['Description']}\n**Category**: {row['Category']}, **City**: {row['City']}, **Price**: {row['Price']}, **Rating**: {row['Rating']}, **Similarity Score**: {row['Similarity_Score']:.2f} (Score below 0.2)")
-            else:
-                st.markdown(f"**{row['Place_Name']}**\n{row['Description']}\n**Category**: {row['Category']}, **City**: {row['City']}, **Price**: {row['Price']}, **Rating**: {row['Rating']}, **Similarity Score**: {row['Similarity_Score']:.2f}")
+            # Default recommendations
+            st.write("Tempat wisata yang direkomendasikan berdasarkan deskripsi Kamu:")
+            st.write(recommended_places)
 
-        # Filter recommendations to the top ntop regardless of score
-        recommended_top_places = recommended_places.head(ntop)
-        if recommended_top_places.empty:
-            st.write("Tidak ada rekomendasi yang sesuai dengan preferensi Kamu.")
+            # Top 3 recommendations
+            st.write("Top 3 rekomendasi tempat wisata:")
+            st.write(recommended_places.head(3))
+
+            # Top 5 recommendations
+            st.write("Top 5 rekomendasi tempat wisata:")
+            st.write(recommended_places.head(5))
+
+            # Top 7 recommendations
+            st.write("Top 7 rekomendasi tempat wisata:")
+            st.write(recommended_places.head(7))
         else:
-            st.write("Berikut rekomendasi teratas untuk Kamu:")
-            st.write(recommended_top_places)
-
+            st.write("Tidak ada rekomendasi yang sesuai dengan preferensi Kamu.")
     else:
         st.write("Hindari menggunakan nama kota, Karena kami akan merekomendasikan tempat yang paling cocok dengan Kamu di Seluruh Indonesia")
 
@@ -96,3 +96,4 @@ if choice == "Filter Tempat Wisata":
     filter_places()
 elif choice == "Rekomendasi berdasarkan Deskripsi":
     recommend_by_description()
+

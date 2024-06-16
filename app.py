@@ -61,7 +61,7 @@ def recommend_by_description():
 
         # Batasi hasil rekomendasi ke jumlah yang dipilih oleh pengguna (ntop)
         top_indices = recommended_indices[:ntop]
-        
+
         # Buat DataFrame untuk menampilkan tempat wisata yang direkomendasikan dengan skor cosine similarity
         recommended_places = info_tourism.iloc[recommended_indices][['Place_Name', 'Description', 'Category', 'City', 'Price', 'Rating']]
         recommended_places['Similarity_Score'] = similarity_scores[recommended_indices]

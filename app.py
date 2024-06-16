@@ -38,6 +38,9 @@ def recommend_by_description():
     st.write('Contoh : saya ingin pergi dengan keluarga dan ingin melihat lukisan lukisan yang indah')
     st.write('Contoh : saya ingin pergi ke pantai yang masih jarang orang tahu')
     if user_input:
+        # Pilihan untuk menampilkan rekomendasi teratas
+        ntop = st.selectbox('Berapa rekomendasi yang ingin ditampilkan?', options=[3, 5, 7], index=0)
+
         # Pra-pemrosesan teks pada input pengguna
         stop_factory = StopWordRemoverFactory()
         stop_words = stop_factory.get_stop_words()
@@ -60,6 +63,9 @@ def recommend_by_description():
         filtered_indices = [i for i in recommended_indices if similarity_scores[i] >= 0.2]
 
         if filtered_indices:
+            # Batasi hasil rekomendasi ke jumlah yang dipilih oleh pengguna (ntop)
+            filtered_indices = filtered_indices[:ntop]
+
             # Buat DataFrame untuk menampilkan tempat wisata yang direkomendasikan dengan skor cosine similarity
             recommended_places = info_tourism.iloc[filtered_indices][['Place_Name', 'Description', 'Category', 'City', 'Price', 'Rating']]
             recommended_places['Similarity_Score'] = similarity_scores[filtered_indices]

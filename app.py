@@ -59,21 +59,28 @@ def recommend_by_description():
         similarity_scores = similarity_scores.flatten()
         recommended_indices = similarity_scores.argsort()[::-1]
 
-        # Filter recommendations with similarity score >= 0.2
-        filtered_indices = [i for i in recommended_indices if similarity_scores[i] >= 0.2]
+        # Batasi hasil rekomendasi ke jumlah yang dipilih oleh pengguna (ntop)
+        top_indices = recommended_indices[:ntop]
+        
+        # Buat DataFrame untuk menampilkan tempat wisata yang direkomendasikan dengan skor cosine similarity
+        recommended_places = info_tourism.iloc[recommended_indices][['Place_Name', 'Description', 'Category', 'City', 'Price', 'Rating']]
+        recommended_places['Similarity_Score'] = similarity_scores[recommended_indices]
 
-        if filtered_indices:
-            # Batasi hasil rekomendasi ke jumlah yang dipilih oleh pengguna (ntop)
-            filtered_indices = filtered_indices[:ntop]
+        st.write("Tempat wisata yang direkomendasikan berdasarkan deskripsi Kamu:")
+        for index, row in recommended_places.iterrows():
+            if row['Similarity_Score'] < 0.2:
+                st.markdown(f"**{row['Place_Name']}**\n{row['Description']}\n**Category**: {row['Category']}, **City**: {row['City']}, **Price**: {row['Price']}, **Rating**: {row['Rating']}, **Similarity Score**: {row['Similarity_Score']:.2f} (Score below 0.2)")
+            else:
+                st.markdown(f"**{row['Place_Name']}**\n{row['Description']}\n**Category**: {row['Category']}, **City**: {row['City']}, **Price**: {row['Price']}, **Rating**: {row['Rating']}, **Similarity Score**: {row['Similarity_Score']:.2f}")
 
-            # Buat DataFrame untuk menampilkan tempat wisata yang direkomendasikan dengan skor cosine similarity
-            recommended_places = info_tourism.iloc[filtered_indices][['Place_Name', 'Description', 'Category', 'City', 'Price', 'Rating']]
-            recommended_places['Similarity_Score'] = similarity_scores[filtered_indices]
-
-            st.write("Tempat wisata yang direkomendasikan berdasarkan deskripsi Kamu:")
-            st.write(recommended_places)
-        else:
+        # Filter recommendations to the top ntop regardless of score
+        recommended_top_places = recommended_places.head(ntop)
+        if recommended_top_places.empty:
             st.write("Tidak ada rekomendasi yang sesuai dengan preferensi Kamu.")
+        else:
+            st.write("Berikut rekomendasi teratas untuk Kamu:")
+            st.write(recommended_top_places)
+
     else:
         st.write("Hindari menggunakan nama kota, Karena kami akan merekomendasikan tempat yang paling cocok dengan Kamu di Seluruh Indonesia")
 

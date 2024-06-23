@@ -127,6 +127,3 @@ if choice == "Filter Tempat Wisata":
     filter_places()
 elif choice == "Rekomendasi berdasarkan Deskripsi":
     recommend_by_description()
-
-
-perbaiki agar sesuai yang saya inginkan , tuliskan juga requiretments.txt

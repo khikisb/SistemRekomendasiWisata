@@ -2,10 +2,15 @@ import streamlit as st
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-import string
 
 # Load data
 info_tourism = pd.read_csv("https://raw.githubusercontent.com/khikisb/SistemRekomendasiWisata/main/tourism_with_id.csv")
+
+# Function to preprocess text
+def preprocess_text(text):
+    text = text.lower()
+    text = text.translate(str.maketrans('', '', string.punctuation))
+    return text
 
 # Tab pertama: Filter Tempat Wisata
 def filter_places():
@@ -79,9 +84,6 @@ def recommend_by_description(info_tourism, tfidf_model, tfidf_matrix):
 hasilproses =  pd.read_csv("hasilproses.csv")
 tfidf_model = TfidfVectorizer().fit(hasilproses['Description'])  # Fit TF-IDF on tourism descriptions
 tfidf_matrix = tfidf_model.transform(hasilproses['Description'])  # Transform tourism descriptions
-
-# Call the recommendation function
-recommend_by_description(info_tourism, tfidf_model, tfidf_matrix)
 
 # Main App
 st.title("Sistem Rekomendasi Tempat Wisata")

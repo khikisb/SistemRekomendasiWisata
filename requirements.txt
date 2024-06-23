@@ -1,3 +1,5 @@
 scikit-learn
 nltk
 sastrawi
+streamlit
+pandas

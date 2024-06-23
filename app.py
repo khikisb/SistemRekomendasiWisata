@@ -94,4 +94,4 @@ choice = st.sidebar.radio("Navigasi", tabs)
 if choice == "Filter Tempat Wisata":
     filter_places()
 elif choice == "Rekomendasi berdasarkan Deskripsi":
-    recommend_by_description()
+    recommend_by_description(info_tourism, tfidf_model, tfidf_matrix)

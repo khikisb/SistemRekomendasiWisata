@@ -38,7 +38,6 @@ def filter_places():
 
 # Fungsi Rekomendasi
 def recommend_by_description(info_tourism, tfidf_model, tfidf_matrix):
-    st.title('Sistem Rekomendasi Tempat Wisata')
     user_input = st.text_area(
         'Ceritakan kamu mau pergi kemana? dengan siapa? dan ingin melakukan apa?', 
         placeholder='Deskripsi:'

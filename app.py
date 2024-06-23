@@ -75,8 +75,8 @@ def filter_places():
 def recommend_by_description(info_tourism, tfidf_model, tfidf_matrix):
     user_input = st.text_area(
         'Ceritakan kamu mau pergi kemana? dengan siapa? dan ingin melakukan apa?'
-        'Contoh: saya ingin melihat air terjun yang jarang oranag lain tahu',
-        'saya ingin pergi ke pantai yang masih jarang orang tahu',
+        '/nContoh: saya ingin melihat air terjun yang jarang oranag lain tahu',
+        '/nContoh:saya ingin pergi ke pantai yang masih jarang orang tahu',
         placeholder='Deskripsi:'
     )
     

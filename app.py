@@ -109,7 +109,6 @@ def recommend_by_description(info_tourism, tfidf_model, tfidf_matrix):
             st.write("Hindari menggunakan nama kota, karena kami akan merekomendasikan tempat yang paling cocok dengan Kamu di Seluruh Indonesia.")
 
 # Load necessary data
-info_tourism = pd.read_csv('info_tourism.csv')
 tfidf_model = TfidfVectorizer().fit(info_tourism['Description'])  # Fit TF-IDF on tourism descriptions
 tfidf_matrix = tfidf_model.transform(info_tourism['Description'])  # Transform tourism descriptions
 

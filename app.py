@@ -2,9 +2,6 @@ import streamlit as st
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from nltk.tokenize import word_tokenize
-from nltk.corpus import stopwords
-import nltk
 import string
 
 # Load data
@@ -33,36 +30,6 @@ def filter_places():
         st.write('Maaf, tidak ada tempat wisata yang sesuai dengan preferensi Kamu.')
     else:
         st.write(filtered_data[['Place_Name', 'Description', 'Category', 'City', 'Price', 'Rating']])
-
-# Tab kedua: Rekomendasi berdasarkan deskripsi
-# Ensure necessary NLTK resources are downloaded
-nltk.download('stopwords')
-nltk.download('punkt')
-
-# Preprocessing functions
-def clean_punct(text):
-    clean_tag = re.compile('@\S+')
-    clean_url = re.compile('https?:\/\/.*[\r\n]*')
-    clean_hastag = re.compile('#\S+')
-    clean_symbol = re.compile('[^a-zA-Z]')
-    text = clean_tag.sub('', str(text))
-    text = clean_url.sub('', text)
-    text = clean_hastag.sub(' ', text)
-    text = clean_symbol.sub(' ', text)
-    return text
-
-def tokenize_text(text_data):
-    return word_tokenize(text_data)
-
-def remove_stopwords(tokenized_data):
-    stop_words = set(stopwords.words('indonesian'))
-    return [word for word in tokenized_data if word not in stop_words]
-
-def preprocess_text(text):
-    text = clean_punct(text)
-    tokens = tokenize_text(text)
-    tokens = remove_stopwords(tokens)
-    return ' '.join(tokens)
 
 # Fungsi Rekomendasi
 def recommend_by_description(info_tourism, tfidf_model, tfidf_matrix):
@@ -109,8 +76,9 @@ def recommend_by_description(info_tourism, tfidf_model, tfidf_matrix):
             st.write("Hindari menggunakan nama kota, karena kami akan merekomendasikan tempat yang paling cocok dengan Kamu di Seluruh Indonesia.")
 
 # Load necessary data
-tfidf_model = TfidfVectorizer().fit(info_tourism['Description'])  # Fit TF-IDF on tourism descriptions
-tfidf_matrix = tfidf_model.transform(info_tourism['Description'])  # Transform tourism descriptions
+hasilproses =  pd.read_csv("hasilproses.csv")
+tfidf_model = TfidfVectorizer().fit(hasilproses['Description'])  # Fit TF-IDF on tourism descriptions
+tfidf_matrix = tfidf_model.transform(hasilproses['Description'])  # Transform tourism descriptions
 
 # Call the recommendation function
 recommend_by_description(info_tourism, tfidf_model, tfidf_matrix)

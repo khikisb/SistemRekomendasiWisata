@@ -1,17 +1,44 @@
 import streamlit as st
 import pandas as pd
+import re
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import string
+import nltk
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+
+# Ensure necessary NLTK resources are downloaded
+nltk.download('stopwords')
+nltk.download('punkt')
 
 # Load data
 info_tourism = pd.read_csv("https://raw.githubusercontent.com/khikisb/SistemRekomendasiWisata/main/tourism_with_id.csv")
 
-# Function to preprocess text
-def preprocess_text(text):
-    text = text.lower()
-    text = text.translate(str.maketrans('', '', string.punctuation))
+# Preprocessing functions
+def clean_punct(text):
+    clean_tag = re.compile('@\S+')
+    clean_url = re.compile('https?:\/\/.*[\r\n]*')
+    clean_hastag = re.compile('#\S+')
+    clean_symbol = re.compile('[^a-zA-Z]')
+    text = clean_tag.sub('', str(text))
+    text = clean_url.sub('', text)
+    text = clean_hastag.sub(' ', text)
+    text = clean_symbol.sub(' ', text)
     return text
+
+def tokenize_text(text_data):
+    return word_tokenize(text_data)
+
+def remove_stopwords(tokenized_data):
+    stop_words = set(stopwords.words('indonesian'))
+    return [word for word in tokenized_data if word not in stop_words]
+
+def preprocess_text(text):
+    text = clean_punct(text)
+    tokens = tokenize_text(text)
+    tokens = remove_stopwords(tokens)
+    return ' '.join(tokens)
 
 # Tab pertama: Filter Tempat Wisata
 def filter_places():
@@ -37,8 +64,9 @@ def filter_places():
     else:
         st.write(filtered_data[['Place_Name', 'Description', 'Category', 'City', 'Price', 'Rating']])
 
-# Fungsi Rekomendasi
+# Tab kedua: Rekomendasi berdasarkan Deskripsi
 def recommend_by_description(info_tourism, tfidf_model, tfidf_matrix):
+    st.title('Sistem Rekomendasi Tempat Wisata')
     user_input = st.text_area(
         'Ceritakan kamu mau pergi kemana? dengan siapa? dan ingin melakukan apa?', 
         placeholder='Deskripsi:'
@@ -78,10 +106,10 @@ def recommend_by_description(info_tourism, tfidf_model, tfidf_matrix):
             else:
                 st.write("Tidak ada rekomendasi yang sesuai dengan preferensi Kamu.")
         else:
-            st.write("Hindari menggunakan nama kota, karena kami akan merekomendasikan tempat yang paling cocok dengan Kamu di Seluruh Indonesia.")
+            st.write("Hindari menggunakan nama kota, Karena kami akan merekomendasikan tempat yang paling cocok dengan Kamu di Seluruh Indonesia")
 
 # Load necessary data
-hasilproses =  pd.read_csv("hasilproses.csv")
+hasilproses = pd.read_csv("hasilproses.csv")
 tfidf_model = TfidfVectorizer().fit(hasilproses['Description'])  # Fit TF-IDF on tourism descriptions
 tfidf_matrix = tfidf_model.transform(hasilproses['Description'])  # Transform tourism descriptions
 

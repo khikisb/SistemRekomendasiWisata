@@ -9,8 +9,15 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 
 # Ensure necessary NLTK resources are downloaded
-nltk.download('stopwords')
-nltk.download('punkt')
+try:
+    stopwords.words('indonesian')
+except LookupError:
+    nltk.download('stopwords')
+
+try:
+    word_tokenize("test")
+except LookupError:
+    nltk.download('punkt')
 
 # Load data
 info_tourism = pd.read_csv("https://raw.githubusercontent.com/khikisb/SistemRekomendasiWisata/main/tourism_with_id.csv")
